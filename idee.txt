@@ -1,0 +1,12 @@
+Gare de voyageurs -> Nous donne les différentes gares avec pas mal d'info, pode postal/ departement, long, lat
+Catégorie selon le rayonnement de la gare A/B/C selon le nb de personne
+
+Propreté en gare -> On peut lié par les noms des gare
+Nous donne le nb d'observations, nb non-conformites, % de conformites
+
+=> Imaginer map interactive avec les gares qui apparaissent avec différentes couleurs selon % de conformites
+
+On peut faire un parallèle avec les horaires des gares et dire selon leur temps d'ouveture si la polution est grande ou pas l(la polution)
+On a les horaires par jour, selon le nom des gares
+
+On peut aller plus loin avec le nombre de personnes par gare, et regarder le % du nb total de personne : Genre 700.000 personne avec Propreté à 92% => 644.000 de personne ok et 56.000 de nul
