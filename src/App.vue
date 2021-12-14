@@ -1,14 +1,14 @@
 <template>
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <Sncf msg="Welcome to Your Vue.js App"/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Sncf from './components/Sncf.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Sncf
   }
 }
 </script>

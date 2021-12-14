@@ -1,7 +1,7 @@
 <template>
-  <div class="hello">
-    <h1>Je suis le titre</h1>
-    <iframe src="https://ressources.data.sncf.com/explore/embed/dataset/referentiel-gares-voyageurs/table/?disjunctive.gare_ug_libelle&sort=-gare_alias_libelle_noncontraint&rows=2874&static=false&datasetcard=false" width="400" height="300" frameborder="0"></iframe>
+  <div class="sncf">
+    <h1>Nom des gares</h1>
+    <!-- <iframe src="https://ressources.data.sncf.com/explore/embed/dataset/referentiel-gares-voyageurs/table/?disjunctive.gare_ug_libelle&sort=-gare_alias_libelle_noncontraint&rows=2874&static=false&datasetcard=false" width="400" height="300" frameborder="0"></iframe> -->
     <div :key="index" v-for="(gare, index) in this.gare">
       <p>{{gare.fields.alias_libelle_noncontraint}}</p>
     </div>
@@ -12,7 +12,7 @@
 import axios from 'axios';
 
 export default {
-  name: 'HelloWorld',
+  name: 'Sncf',
   data(){
     return{
       gare: null,
