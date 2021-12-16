@@ -1,14 +1,21 @@
 <template>
-  <Sncf msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <ComponentWithMap />
+    <Sncf msg="Welcome to Your Vue.js App"/>
+  </div>
+
 </template>
 
 <script>
 import Sncf from './components/Sncf.vue'
+import ComponentWithMap from './components/ComponentWithMap.vue'
+
 
 export default {
   name: 'App',
   components: {
-    Sncf
+    Sncf,
+    ComponentWithMap
   }
 }
 </script>

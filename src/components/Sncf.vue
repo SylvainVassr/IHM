@@ -4,6 +4,7 @@
     <!-- <iframe src="https://ressources.data.sncf.com/explore/embed/dataset/referentiel-gares-voyageurs/table/?disjunctive.gare_ug_libelle&sort=-gare_alias_libelle_noncontraint&rows=2874&static=false&datasetcard=false" width="400" height="300" frameborder="0"></iframe> -->
     <div :key="index" v-for="(gare, index) in this.gare">
       <p>{{gare.fields.alias_libelle_noncontraint}}</p>
+      <p>{{gare.fields.latitude_entreeprincipale_wgs84}}</p>
     </div>
   </div>
 </template>
@@ -16,14 +17,18 @@ export default {
   data(){
     return{
       gare: null,
+      latitude: null,
+      longitude: null
+
     }
   },
   mounted(){
     axios
     .get('https://ressources.data.sncf.com/api/records/1.0/search/?dataset=referentiel-gares-voyageurs&q=&rows=2874&sort=-gare_alias_libelle_noncontraint&facet=departement_libellemin&facet=segmentdrg_libelle&facet=gare_agencegc_libelle&facet=gare_regionsncf_libelle&facet=gare_ug_libelle')
     .then((reponse) => {
+      console.log(reponse)
       this.gare = reponse.data["records"];
-      console.log(this.gare)
+      console.log(this.gare[0].fields.latitude_entreeprincipale_wgs84)
       });
   },
 }
