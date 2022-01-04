@@ -1,21 +1,18 @@
 <template>
-  <h1>Entre deux trains</h1>
   <div id="app">
     <Sncf />
   </div>
-
 </template>
 
 <script>
-import Sncf from './components/Sncf.vue'
-
+import Sncf from "./components/Sncf.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    Sncf
+    Sncf,
   },
-}
+};
 </script>
 
 <style>
@@ -25,6 +22,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: auto;
+  width: 98%;
 }
 </style>
