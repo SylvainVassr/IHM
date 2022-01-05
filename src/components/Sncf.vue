@@ -112,6 +112,7 @@ export default {
   },
   data() {
     return {
+      monuments: null,
       gare: null,
       center: [47, 2],
       zoom: 6.15,
@@ -130,6 +131,15 @@ export default {
       .then((reponse) => {
         this.gare = reponse.data["records"];
         console.log(this.gare[0].fields);
+      });
+    axios
+      .get(
+        "https://www.data.gouv.fr/fr/datasets/r/48c28e1a-7d13-4b7e-97d0-7f778cf3a6e2"
+      )
+      .then((response) => {
+        this.monuments = response.data.features;
+        // console.log(this.monuments[0].geometry.coordinates[1]);
+        //* index 0 et 1 pour les coordonnées
       });
     // L.Map.addInitHook(function () {
     //   const markerCluster = L.markerClusterGroup({
