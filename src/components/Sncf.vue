@@ -76,12 +76,19 @@
         <!--        </l-popup>-->
         <!--      </l-marker>-->
         <l-marker
-            v-for="(monument, index) in this.markers" :key="index" :lat-lng="[monument.geometry.coordinates[1], monument.geometry.coordinates[0]]">
+          v-for="(monument, index) in this.markers"
+          :key="index"
+          :lat-lng="[
+            monument.geometry.coordinates[1],
+            monument.geometry.coordinates[0],
+          ]"
+        >
           <l-popup>
-            <h6>{{ monument.properties.Nom}}</h6>
-            <p>{{ monument.properties.Distance}} km</p>
+            <p class="font-weight-bold m-0">{{ monument.properties.Nom }}</p>
+            <p class="m-0 text-center">{{ monument.properties.Distance }} km</p>
           </l-popup>
-        ></l-marker>
+          ></l-marker
+        >
       </l-map>
     </div>
   </div>
@@ -129,7 +136,7 @@ export default {
       iconHeight: 40,
       nom_gare: null,
       index: null,
-      markers : []
+      markers: [],
     };
   },
   mounted() {
@@ -152,11 +159,12 @@ export default {
       });
     axios
       .get(
-          "https://diffuseur.datatourisme.gouv.fr/webservice/549d92de3c8a4686e521001a1bd57776/484d6ffd-567c-40a8-8e04-95969c03005f"
-      ).then((response) => {
-      this.newApiMonument = response.data.features;
-      console.log(this.newApiMonument)
-    });
+        "https://diffuseur.datatourisme.gouv.fr/webservice/549d92de3c8a4686e521001a1bd57776/484d6ffd-567c-40a8-8e04-95969c03005f"
+      )
+      .then((response) => {
+        this.newApiMonument = response.data.features;
+        console.log(this.newApiMonument);
+      });
     // L.Map.addInitHook(function () {
     //   const markerCluster = L.markerClusterGroup({
     //     removeOutsideVisibleBounds: true,
@@ -199,37 +207,45 @@ export default {
       // var nom_ville = this.gare[index].fields.commune_libellemin
       console.log(this.center);
       this.markers = [];
-      for(let i=0; i < this.monuments.length; i++){
+      for (let i = 0; i < this.monuments.length; i++) {
         // console.log("Center Lat " + this.center[0])
         // console.log("Center Lng " + this.center[1])
         // console.log("Monument Lat " + this.monuments[i].geometry.coordinates[0])
         // console.log("Monument Lng " + this.monuments[i].geometry.coordinates[1])
-        var distance = this.getDistanceFromLatLonInKm(this.center[0], this.center[1], this.monuments[i].geometry.coordinates[1], this.monuments[i].geometry.coordinates[0])
+        var distance = this.getDistanceFromLatLonInKm(
+          this.center[0],
+          this.center[1],
+          this.monuments[i].geometry.coordinates[1],
+          this.monuments[i].geometry.coordinates[0]
+        );
         // console.log("Distance : " + distance)
-        if(distance <= this.area){
-            // console.log("Nom du monument : " + this.monuments[i].properties.Nom)
-          this.monuments[i].properties.Distance = distance
-          this.markers.push(this.monuments[i])
-          }
+        if (distance <= this.area) {
+          // console.log("Nom du monument : " + this.monuments[i].properties.Nom)
+          distance = parseFloat(distance).toFixed(2);
+          this.monuments[i].properties.Distance = distance;
+          this.markers.push(this.monuments[i]);
+        }
       }
     },
+
     deg2rad(deg) {
-      return deg * (Math.PI/180)
+      return deg * (Math.PI / 180);
     },
+
     getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
       var R = 6371; // Radius of the earth in km
-      var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
-      var dLon = this.deg2rad(lon2-lon1);
+      var dLat = this.deg2rad(lat2 - lat1); // deg2rad below
+      var dLon = this.deg2rad(lon2 - lon1);
       var a =
-          Math.sin(dLat/2) * Math.sin(dLat/2) +
-          Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-          Math.sin(dLon/2) * Math.sin(dLon/2)
-      ;
-      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(this.deg2rad(lat1)) *
+          Math.cos(this.deg2rad(lat2)) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       var d = R * c; // Distance in km
       return d;
     },
-
   },
 };
 </script>
