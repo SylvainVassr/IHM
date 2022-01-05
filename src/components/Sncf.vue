@@ -29,6 +29,7 @@
             list="gare"
             class="form-control"
             placeholder="Nom de votre gare"
+            onfocus="this.value=''"
             v-model="nom_gare"
           />
           <datalist id="gare">
@@ -74,6 +75,12 @@
         <!--          <h3>{{gare[index].fields.latitude_entreeprincipale_wgs84}}</h3>-->
         <!--        </l-popup>-->
         <!--      </l-marker>-->
+        <l-marker
+            v-for="(monument, index) in this.markers" :key="index" :lat-lng="[monument.geometry.coordinates[1], monument.geometry.coordinates[0]]">
+          <l-popup>
+            <h1>{{ monument.properties}}</h1>
+          </l-popup>
+        ></l-marker>
       </l-map>
     </div>
   </div>
@@ -89,9 +96,9 @@ import axios from "axios";
 import {
   LMap,
   LTileLayer,
-  // LMarker,
+  LMarker,
   LControlLayers,
-  // LPopup,
+  LPopup,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -100,9 +107,9 @@ export default {
   components: {
     LMap,
     LTileLayer,
-    // LMarker,
+    LMarker,
     LControlLayers,
-    // LPopup,
+    LPopup,
   },
   props: {
     marker: {
@@ -121,6 +128,7 @@ export default {
       iconHeight: 40,
       nom_gare: null,
       index: null,
+      markers : []
     };
   },
   mounted() {
@@ -141,6 +149,13 @@ export default {
         // console.log(this.monuments[0].geometry.coordinates[1]);
         //* index 0 et 1 pour les coordonnées
       });
+    axios
+      .get(
+          "https://diffuseur.datatourisme.gouv.fr/webservice/549d92de3c8a4686e521001a1bd57776/484d6ffd-567c-40a8-8e04-95969c03005f"
+      ).then((response) => {
+      this.newApiMonument = response.data.features;
+      console.log(this.newApiMonument)
+    });
     // L.Map.addInitHook(function () {
     //   const markerCluster = L.markerClusterGroup({
     //     removeOutsideVisibleBounds: true,
@@ -180,9 +195,40 @@ export default {
         this.gare[index].geometry.coordinates[1],
         this.gare[index].geometry.coordinates[0],
       ];
+      // var nom_ville = this.gare[index].fields.commune_libellemin
       console.log(this.center);
-      this.zoom = 12;
+      this.markers = [];
+      for(let i=0; i < this.monuments.length; i++){
+        // console.log("Center Lat " + this.center[0])
+        // console.log("Center Lng " + this.center[1])
+        // console.log("Monument Lat " + this.monuments[i].geometry.coordinates[0])
+        // console.log("Monument Lng " + this.monuments[i].geometry.coordinates[1])
+        var distance = this.getDistanceFromLatLonInKm(this.center[0], this.center[1], this.monuments[i].geometry.coordinates[1], this.monuments[i].geometry.coordinates[0])
+        // console.log("Distance : " + distance)
+        if(distance <= this.area){
+            // console.log("Nom du monument : " + this.monuments[i].properties.Nom)
+            this.monuments[i]["Distance"] = distance
+            this.markers.push(this.monuments[i])
+          }
+      }
     },
+    deg2rad(deg) {
+      return deg * (Math.PI/180)
+    },
+    getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+      var R = 6371; // Radius of the earth in km
+      var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
+      var dLon = this.deg2rad(lon2-lon1);
+      var a =
+          Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+          Math.sin(dLon/2) * Math.sin(dLon/2)
+      ;
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      var d = R * c; // Distance in km
+      return d;
+    },
+
   },
 };
 </script>
