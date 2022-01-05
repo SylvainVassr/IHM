@@ -78,7 +78,8 @@
         <l-marker
             v-for="(monument, index) in this.markers" :key="index" :lat-lng="[monument.geometry.coordinates[1], monument.geometry.coordinates[0]]">
           <l-popup>
-            <h1>{{ monument.properties}}</h1>
+            <h6>{{ monument.properties.Nom}}</h6>
+            <p>{{ monument.properties.Distance}} km</p>
           </l-popup>
         ></l-marker>
       </l-map>
@@ -207,8 +208,8 @@ export default {
         // console.log("Distance : " + distance)
         if(distance <= this.area){
             // console.log("Nom du monument : " + this.monuments[i].properties.Nom)
-            this.monuments[i]["Distance"] = distance
-            this.markers.push(this.monuments[i])
+          this.monuments[i].properties.Distance = distance
+          this.markers.push(this.monuments[i])
           }
       }
     },
