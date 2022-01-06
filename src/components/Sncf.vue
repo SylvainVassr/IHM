@@ -65,16 +65,6 @@
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         ></l-tile-layer>
         <l-control-layers />
-        <!--      <l-marker-->
-        <!--          v-for="(gares,index) in this.gare"-->
-        <!--          :key= "index"-->
-        <!--          :lat-lng="[gares.fields.latitude_entreeprincipale_wgs84, gares.fields.longitude_entreeprincipale_wgs84]">-->
-        <!--        <l-popup>-->
-        <!--          <h1>{{gare[index].fields.commune_libellemin}}</h1>-->
-        <!--          <h2>{{gare[index].fields.departement_libellemin}} ==> {{gare[index].fields.departement_numero}} </h2>-->
-        <!--          <h3>{{gare[index].fields.latitude_entreeprincipale_wgs84}}</h3>-->
-        <!--        </l-popup>-->
-        <!--      </l-marker>-->
         <l-marker
           v-for="(monument, index) in this.markers"
           :key="index"
@@ -84,11 +74,21 @@
           ]"
         >
           <l-popup>
-            <p class="font-weight-bold m-0">{{ monument.properties.Nom }}</p>
+            <p class="font-weight-bold m-0"><a :href="monument.properties.Link">{{ monument.properties.Nom }}</a></p>
             <p class="m-0 text-center">{{ monument.properties.Distance }} km</p>
           </l-popup>
           ></l-marker
         >
+        <l-marker v-if="this.coordGare"
+          :lat-lng="this.coordGare"
+          >
+          <l-icon ref="icon">
+            <img :width="iconWidth" :height="iconHeight" style="margin-left: -15px" class="restaurant-icon" :src="iconUrl"/>
+          </l-icon>
+          <l-popup>
+            {{nom_gare.split(".")[1]}}
+          </l-popup>
+        </l-marker>
       </l-map>
     </div>
   </div>
@@ -107,6 +107,7 @@ import {
   LMarker,
   LControlLayers,
   LPopup,
+  LIcon
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -118,6 +119,7 @@ export default {
     LMarker,
     LControlLayers,
     LPopup,
+    LIcon
   },
   props: {
     marker: {
@@ -132,11 +134,13 @@ export default {
       center: [47, 2],
       zoom: 6.15,
       area: 10,
-      iconWidth: 25,
-      iconHeight: 40,
+      iconWidth: 30,
+      iconHeight: 30,
       nom_gare: null,
       index: null,
       markers: [],
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/2088/2088138.png",
+      coordGare : null,
     };
   },
   mounted() {
@@ -145,7 +149,7 @@ export default {
         "https://ressources.data.sncf.com/api/records/1.0/search/?dataset=referentiel-gares-voyageurs&q=&rows=2874&sort=-gare_alias_libelle_noncontraint&facet=departement_libellemin&facet=segmentdrg_libelle&facet=gare_agencegc_libelle&facet=gare_regionsncf_libelle&facet=gare_ug_libelle"
       )
       .then((reponse) => {
-        this.gare = reponse.data["records"];
+        this.gare = reponse.data["records"].reverse();
         console.log(this.gare[0].fields);
       });
     axios
@@ -165,26 +169,6 @@ export default {
         this.newApiMonument = response.data.features;
         console.log(this.newApiMonument);
       });
-    // L.Map.addInitHook(function () {
-    //   const markerCluster = L.markerClusterGroup({
-    //     removeOutsideVisibleBounds: true,
-    //     chunkedLoading: true,
-    //   }).addTo(this);
-    //
-    //   function r(min, max) {
-    //     return Math.random() * (max - min) + min;
-    //   }
-    //   let markers = [];
-    //   for (let i = 0; i < 5000; i++) {
-    //     const marker = L.marker(
-    //         L.latLng(r(53.82477192, 53.92365592), r(27.5078027, 27.70640622))
-    //     );
-    //     marker.bindPopup("Number " + i);
-    //     markers.push(marker);
-    //   }
-    //
-    //   markerCluster.addLayers(markers);
-    // });
   },
   computed: {
     dynamicSize() {
@@ -193,9 +177,10 @@ export default {
     dynamicAnchor() {
       return [this.iconSize / 2, this.iconSize * 1.15];
     },
+
   },
   methods: {
-    submit: function () {
+     submit: function () {
       console.log(this.nom_gare);
       var index = this.nom_gare.split(".")[0];
       console.log("index ==> " + index);
@@ -208,24 +193,28 @@ export default {
       console.log(this.center);
       this.markers = [];
       for (let i = 0; i < this.monuments.length; i++) {
-        // console.log("Center Lat " + this.center[0])
-        // console.log("Center Lng " + this.center[1])
-        // console.log("Monument Lat " + this.monuments[i].geometry.coordinates[0])
-        // console.log("Monument Lng " + this.monuments[i].geometry.coordinates[1])
         var distance = this.getDistanceFromLatLonInKm(
           this.center[0],
           this.center[1],
           this.monuments[i].geometry.coordinates[1],
           this.monuments[i].geometry.coordinates[0]
         );
+
         // console.log("Distance : " + distance)
         if (distance <= this.area) {
-          // console.log("Nom du monument : " + this.monuments[i].properties.Nom)
           distance = parseFloat(distance).toFixed(2);
-          this.monuments[i].properties.Distance = distance;
-          this.markers.push(this.monuments[i]);
+         if(!(this.monuments[i].properties.Nom == "Immeuble") && !(this.monuments[i].properties.Nom == "Maison"))  {
+           this.monuments[i].properties.Distance = distance;
+           this.monuments[i].properties.Link = "https://fr.wikipedia.org/wiki/" + this.monuments[i].properties.Nom.replace(" ", "_")
+           this.markers.push(this.monuments[i]);
+         }
         }
+        this.coordGare = this.center
+        this.activate()
       }
+    },
+    activate() {
+      setTimeout(() => this.zoom = 11, 700);
     },
     deg2rad(deg) {
       return deg * (Math.PI / 180);
