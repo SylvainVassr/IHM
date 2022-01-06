@@ -5,13 +5,14 @@
         <figure class="text-center">
           <blockquote class="blockquote">
             <p class="mb-0">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
-              posuere erat a ante.
+              Du temps libre entre deux trains et rien de prévu ?
+            </p>
+            <p>
+              Voici de quoi vous occuper ! Notre application vous liste les
+              lieux notables selon votre destination dans un périmètre que vous
+              choississez.
             </p>
           </blockquote>
-          <figcaption class="blockquote-footer">
-            Someone famous in <cite title="Source Title">Source Title</cite>
-          </figcaption>
         </figure>
       </div>
       <hr class="mt-2" />
@@ -74,19 +75,27 @@
           ]"
         >
           <l-popup>
-            <p class="font-weight-bold m-0"><a :href="monument.properties.Link">{{ monument.properties.Nom }}</a></p>
+            <p class="font-weight-bold m-0">
+              <a :href="monument.properties.Link">{{
+                monument.properties.Nom
+              }}</a>
+            </p>
             <p class="m-0 text-center">{{ monument.properties.Distance }} km</p>
           </l-popup>
           ></l-marker
         >
-        <l-marker v-if="this.coordGare"
-          :lat-lng="this.coordGare"
-          >
+        <l-marker v-if="this.coordGare" :lat-lng="this.coordGare">
           <l-icon ref="icon">
-            <img :width="iconWidth" :height="iconHeight" style="margin-left: -15px" class="restaurant-icon" :src="iconUrl"/>
+            <img
+              :width="iconWidth"
+              :height="iconHeight"
+              style="margin-left: -15px"
+              class="restaurant-icon"
+              :src="iconUrl"
+            />
           </l-icon>
           <l-popup>
-            {{nom_gare.split(".")[1]}}
+            {{ nom_gare.split(".")[1] }}
           </l-popup>
         </l-marker>
       </l-map>
@@ -107,7 +116,7 @@ import {
   LMarker,
   LControlLayers,
   LPopup,
-  LIcon
+  LIcon,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -119,7 +128,7 @@ export default {
     LMarker,
     LControlLayers,
     LPopup,
-    LIcon
+    LIcon,
   },
   props: {
     marker: {
@@ -140,7 +149,7 @@ export default {
       index: null,
       markers: [],
       iconUrl: "https://cdn-icons-png.flaticon.com/512/2088/2088138.png",
-      coordGare : null,
+      coordGare: null,
     };
   },
   mounted() {
@@ -177,10 +186,9 @@ export default {
     dynamicAnchor() {
       return [this.iconSize / 2, this.iconSize * 1.15];
     },
-
   },
   methods: {
-     submit: function () {
+    submit: function () {
       console.log(this.nom_gare);
       var index = this.nom_gare.split(".")[0];
       console.log("index ==> " + index);
@@ -203,18 +211,23 @@ export default {
         // console.log("Distance : " + distance)
         if (distance <= this.area) {
           distance = parseFloat(distance).toFixed(2);
-         if(!(this.monuments[i].properties.Nom == "Immeuble") && !(this.monuments[i].properties.Nom == "Maison"))  {
-           this.monuments[i].properties.Distance = distance;
-           this.monuments[i].properties.Link = "https://fr.wikipedia.org/wiki/" + this.monuments[i].properties.Nom.replace(" ", "_")
-           this.markers.push(this.monuments[i]);
-         }
+          if (
+            !(this.monuments[i].properties.Nom == "Immeuble") &&
+            !(this.monuments[i].properties.Nom == "Maison")
+          ) {
+            this.monuments[i].properties.Distance = distance;
+            this.monuments[i].properties.Link =
+              "https://fr.wikipedia.org/wiki/" +
+              this.monuments[i].properties.Nom.replace(" ", "_");
+            this.markers.push(this.monuments[i]);
+          }
         }
-        this.coordGare = this.center
-        this.activate()
+        this.coordGare = this.center;
+        this.activate();
       }
     },
     activate() {
-      setTimeout(() => this.zoom = 11, 700);
+      setTimeout(() => (this.zoom = 11), 700);
     },
     deg2rad(deg) {
       return deg * (Math.PI / 180);
