@@ -59,6 +59,17 @@
           Submit
         </button>
       </form>
+      <br>
+      <div class="row" v-if="this.coordGare">
+        <h6>{{ nom_gare.split(".")[1] }}</h6>
+        <ul>
+          <li>{{this.gare[nom_gare.split(".")[0]].fields.departement_libellemin}}</li>
+          <li>{{this.gare[nom_gare.split(".")[0]].fields.gare_regionsncf_libelle}}</li>
+          <li>{{this.gare[nom_gare.split(".")[0]].fields.adresse_cp }}</li>
+        </ul>
+
+
+      </div>
     </div>
     <div class="col-sm-8 map">
       <l-map class="map" v-model="zoom" v-model:zoom="zoom" :center="center">
@@ -191,14 +202,10 @@ export default {
     submit: function () {
       console.log(this.nom_gare);
       var index = this.nom_gare.split(".")[0];
-      console.log("index ==> " + index);
-      console.log(this.center);
       this.center = [
         this.gare[index].geometry.coordinates[1],
         this.gare[index].geometry.coordinates[0],
       ];
-      // var nom_ville = this.gare[index].fields.commune_libellemin
-      console.log(this.center);
       this.markers = [];
       for (let i = 0; i < this.monuments.length; i++) {
         var distance = this.getDistanceFromLatLonInKm(
@@ -207,8 +214,6 @@ export default {
           this.monuments[i].geometry.coordinates[1],
           this.monuments[i].geometry.coordinates[0]
         );
-
-        // console.log("Distance : " + distance)
         if (distance <= this.area) {
           distance = parseFloat(distance).toFixed(2);
           if (
