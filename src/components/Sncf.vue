@@ -181,14 +181,6 @@ export default {
         // console.log(this.monuments[0].geometry.coordinates[1]);
         //* index 0 et 1 pour les coordonnées
       });
-    axios
-      .get(
-        "https://diffuseur.datatourisme.gouv.fr/webservice/549d92de3c8a4686e521001a1bd57776/484d6ffd-567c-40a8-8e04-95969c03005f"
-      )
-      .then((response) => {
-        this.newApiMonument = response.data.features;
-        console.log(this.newApiMonument);
-      });
   },
   computed: {
     dynamicSize() {
