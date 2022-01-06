@@ -27,8 +27,8 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 Notre application appelé "Battement" nous permet d'avoir un visuel des monuments à visiter à proximitée d'une gare.
 
 Pour cela, nous avons 2 API :
-    - SNCF : qui nous retourne toutes les gares de France
-    - Monuments : qui nous retourne les monuments historiques
+1. SNCF : qui nous retourne toutes les gares de France
+2. Monuments : qui nous retourne les monuments historiques
 
 Tout d'abord, nous avons la map, réalisé avec leaflet afin d'avoir un visuel. De base celle ci ne comporte aucune information. Elle sera changer lors de la validation de notre formulaire.
 
