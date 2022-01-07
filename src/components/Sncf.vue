@@ -224,7 +224,7 @@ export default {
       }
     },
     activate() {
-      setTimeout(() => (this.zoom = 11), 700);
+      setTimeout(() => (this.zoom = 11), 1000);
     },
     deg2rad(deg) {
       return deg * (Math.PI / 180);
